@@ -1,14 +1,17 @@
 import logo from './logo.svg';
 import './App.css';
-import Add from "./Pages/Add.js";
+import './modal.css';
+import Add from "./Pages/Newsfeed/Newsfeed.js";
+import UserInfo from './User/UserInfo.js';
 import {Route, BrowserRouter as Router, Switch, Link, useParams} from "react-router-dom";
 import React, { useState, useEffect, useCallback } from 'react';
 import { ref, set, onValue, push } from "firebase/database";
 import {db} from "./firebase";
 import "./index.css";
 import Navbar from './Navbar';
+import Signup from './User/Signup';
 
-import Phrase from './Pages/Phrase';
+import Phrase from './Pages/PhrasePage';
 
 function App() {
 
@@ -19,7 +22,8 @@ function App() {
 
     const readphraseListData = () =>{
 
-        const phraseListData = ref((db), "users/" + `${uID}/` + "Phrases/");
+        const phraseListData2 = ref((db), "users/" + `${uID}/` + "Phrases/");
+        const phraseListData = ref((db),"Phrases/");
         onValue(phraseListData,(snapshot) => {
           if (snapshot.exists()) {
             setPhraseList(snapshot.val())
@@ -33,6 +37,14 @@ function App() {
         })
       } 
 
+      // const testing = () =>{
+      //   return(
+      //     <div>
+      //       <h1>This is a test Sir</h1>
+      //     </div>
+      //   )
+      // }
+
   useEffect(()=>{
     console.log(readphraseListData())
   },[])
@@ -40,14 +52,15 @@ function App() {
   return (
     <div className="App">
       <Navbar/>
-      <p class="dude">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque luctus justo et sem dictum lobortis.</p>
-
+      {/* {testing()} */}
       <Router>
         <Switch>
         
           <Route path = '/add' ><Add data = {phraseList}/></Route>
+          <Route path = '/signup2' ><Signup/></Route>
+          <Route path = '/edit' ><UserInfo/></Route>
           <Route path = '/:id' ><Phrase data = {phraseList}/></Route>
-        
+
         </Switch>
       </Router>
     </div>
