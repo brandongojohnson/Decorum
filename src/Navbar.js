@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import Signup from './User/Signup';
+import Signup from './User/Signup copy';
 
 function Navbar(props) {
     const [showModal, setShowModal] = useState(false);

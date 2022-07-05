@@ -17,33 +17,26 @@ function App() {
 
   const uID = "Pat";
     const [phraseList, setPhraseList] = useState([]);
+    const [userList, setUserList] = useState([]);
     const [dataLoaded, setDataLoaded] = useState(false);
 
 
     const readphraseListData = () =>{
 
-        const phraseListData2 = ref((db), "users/" + `${uID}/` + "Phrases/");
-        const phraseListData = ref((db),"Phrases/");
+        const phraseListData = ref(db);
+
         onValue(phraseListData,(snapshot) => {
           if (snapshot.exists()) {
-            setPhraseList(snapshot.val())
+            setPhraseList(snapshot.val()["Phrases"])
+            setUserList(snapshot.val()["users"])
             setDataLoaded(true);
-            console.log("Data Loaded")
-        
-    
+            console.log("Data Loaded");
+
           } else {
             alert("No data found")
           }
         })
       } 
-
-      // const testing = () =>{
-      //   return(
-      //     <div>
-      //       <h1>This is a test Sir</h1>
-      //     </div>
-      //   )
-      // }
 
   useEffect(()=>{
     console.log(readphraseListData())
@@ -56,8 +49,13 @@ function App() {
       <Router>
         <Switch>
         
-          <Route path = '/add' ><Add data = {phraseList}/></Route>
-          <Route path = '/signup2' ><Signup/></Route>
+          <Route path = '/add' ><Add 
+          phrasedata = {phraseList}
+          userdata = {userList}
+          loaded = {dataLoaded}
+          /></Route>
+
+          {/* <Route path = '/signup2' ><Signup/></Route> */}
           <Route path = '/edit' ><UserInfo/></Route>
           <Route path = '/:id' ><Phrase data = {phraseList}/></Route>
 

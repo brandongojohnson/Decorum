@@ -8,55 +8,43 @@ import UserInfo from './UserInfo.js';
 
 function Signup(props) {
 
+  //Sign up
+    //Email
+    //Username
+    //Password
+
+  //Log in
+    //Username
+    //Password
+
   //-----------------------------------------------
-  const [username, setUsername] = useState("");
-  const user = getAuth().currentUser;
-
-  const addUserName = () =>{
-    updateProfile(user, {
-        userName: username,
-        })
-    update(dataRef(db, 'users/' + `${user.uid}/`), {
-        displayName: username,
-        })
-    // console.log("Just testing")
-    // props.setPressAdd(false)
-
-
-return (
-    <div>
-        <input type="text" onChange={(e)=>setUsername(e.target.value)} value = {username} placeholder = "username"></input><br/>
-        {props.pressAdd && addUserName()}
-        {/* <button onClick={()=>addUserName()}>Add Username</button> */}
-     
-        <Upload/>
-    </div>
-);
-  }
-
-  //----------------------------------------------
-
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  // const [addUsername, setAddUserName] = useState(false)
-  const[pressAdd,setPressAdd] = useState(false);
-
-
-
   const auth = getAuth();
+  const user = auth.currentUser;
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  
 
   const clear = () => {
     setEmail("");
     setPassword("");
+    setUsername("");
   }
 
-  const newUser = () => {
+  const addUserName = (uid) =>{
+    update(dataRef(db, 'users/' + `${uid}/`), {
+        displayName: username,
+        })
+        
+      }
 
+  const newUser = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in 
-        const user = userCredential.user;
-        // ...
+        
+        addUserName(userCredential.user.uid);
         clear();
 
       })
@@ -65,12 +53,13 @@ return (
         const errorMessage = error.message;
         // ..
       });
-      setPressAdd(true);
+      clear();
   }
 
   const signIn = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+
         // Signed in 
         const user = userCredential.user;
         // setAddUserName(true)
@@ -94,20 +83,12 @@ return (
   return (
     <div class="modal">
       <div class="modal-content">
-        <input type="text" placeholder="email" onChange={(e) => setEmail(e.target.value)} value={email}></input>
-        <input type="text" placeholder="password" onChange={(e) => setPassword(e.target.value)} value={password}></input>
-        <input type="text" onChange={(e)=>setUsername(e.target.value)} value = {username} placeholder = "username"></input><br/>
 
+       {props.signIn != true && <input type="text" placeholder="username" onChange={(e)=>setUsername(e.target.value)} value = {username}></input>}
+       <input type="text" placeholder="email" onChange={(e)=>setEmail(e.target.value)} value = {email}></input>
+       <input type="text" placeholder="password" onChange={(e)=>setPassword(e.target.value)} value = {password}></input><br/>
+       {props.signIn != true ? <button onClick={newUser}> Sign Up</button> : <button onClick={signIn}> Sign In</button>}
 
-        {props.signIn == false
-          ? <div>
-              {/* <UserInfo pressAdd = {pressAdd} setPressAdd = {setPressAdd}/> */}
-              {addUserName()}
-              <button onClick={() => newUser()}>Sign up</button>
-            </div>
-          : <button onClick={() => signIn()}>Sign in</button>}
-
-        <button onClick={() => logOff()}>Log off</button>
       </div>
     </div>
   );
